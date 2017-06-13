@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1497378218 source:c:\users\romanchuk.serg\desktop\materiallistcreate\main.cpp
+	<iostream>
+	<windows.h>
+	<fstream>
+
