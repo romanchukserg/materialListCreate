@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
     char path[] = "c:\\MaterialListCreate";
     char exp[] = "nk";
-    char fileNameData[] = "mlData.bin";
+    char fileNameData[] = "_mlData.bin";
 
     readMaterialList(ml, path, exp);
     saveMaterialList(ml, path, fileNameData);
@@ -167,7 +167,7 @@ void saveMaterialList(MaterialList &ml, char * path, char * fileName)
 
     for(int i = 0; i < ml.materialCount; i++)
     {
-        int len = strlen(ml.materialRecord[i].name);
+        int len = strlen(ml.materialRecord[i].name) + 1;
 
         fout.write((char*)&len, sizeof len);
         fout.write(ml.materialRecord[i].name, len);
@@ -186,7 +186,12 @@ void saveMaterialList(MaterialList &ml, char * path, char * fileName)
 
 void loadMaterialList(MaterialList &ml, char * path, char * fileName)
 {
-    ifstream fin("c:\\MaterialListCreate\\_mlData.bin", ios_base::binary);
+    char fullPath[1000] = "";
+    strcat(fullPath, path);
+    strcat(fullPath, "\\");
+    strcat(fullPath, fileName);
+
+    ifstream fin(fullPath, ios_base::binary);
 
     fin.read((char*)&ml.materialCount, sizeof ml.materialCount);
     ml.materialRecord = new MaterialRecord[ml.materialCount];
@@ -195,9 +200,8 @@ void loadMaterialList(MaterialList &ml, char * path, char * fileName)
     {
         int len;
         fin.read((char*)&len, sizeof len);
-        ml.materialRecord[i].name = new char[len+1];
+        ml.materialRecord[i].name = new char[len];
         fin.read(ml.materialRecord[i].name, len);
-        ml.materialRecord[i].name[len] = '\0';
 
         fin.read((char*)&ml.materialRecord[i].propertyCount, sizeof ml.materialRecord[i].propertyCount);
         ml.materialRecord[i].propertyRecord = new PropertyRecord[ml.materialRecord[i].propertyCount];
